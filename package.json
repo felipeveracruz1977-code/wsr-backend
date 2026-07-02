@@ -1,0 +1,28 @@
+{
+  "name": "@wsr/contracts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Contrato Único de Datos (SSOT) de Woman Social Run: tipos TypeScript canónicos generados desde el esquema de producción de Supabase.",
+  "main": "contracts/index.ts",
+  "types": "contracts/index.ts",
+  "exports": {
+    ".": {
+      "types": "./contracts/index.ts",
+      "default": "./contracts/index.ts"
+    }
+  },
+  "files": [
+    "contracts"
+  ],
+  "scripts": {
+    "gen:types": "supabase gen types typescript --linked > contracts/database.types.ts"
+  },
+  "keywords": [
+    "wsr",
+    "contracts",
+    "supabase",
+    "types",
+    "ssot"
+  ],
+  "license": "UNLICENSED"
+}
