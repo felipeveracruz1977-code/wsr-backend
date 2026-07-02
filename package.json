@@ -15,7 +15,7 @@
     "contracts"
   ],
   "scripts": {
-    "gen:types": "supabase gen types typescript --linked > contracts/database.types.ts"
+    "gen:types": "npx --yes supabase gen types typescript --linked > contracts/database.types.ts"
   },
   "keywords": [
     "wsr",
