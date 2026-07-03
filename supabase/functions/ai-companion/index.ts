@@ -10,6 +10,7 @@
 
 import Anthropic from 'npm:@anthropic-ai/sdk@0.69.0';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { withObservability } from '../_shared/withObservability.ts';
 
 const MODEL = Deno.env.get('WSR_AI_MODEL') ?? 'claude-opus-4-7';
 
@@ -40,7 +41,7 @@ interface OnboardingRow {
   support_style: string | null;
 }
 
-Deno.serve(async (req) => {
+Deno.serve(withObservability('ai-companion', async (req) => {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
 
   const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
@@ -142,4 +143,4 @@ Deno.serve(async (req) => {
     console.error('[ai-companion] Anthropic error:', e);
     return new Response('AI error', { status: 502 });
   }
-});
+}));

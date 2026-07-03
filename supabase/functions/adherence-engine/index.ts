@@ -31,6 +31,7 @@ import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-
 // Tipar el cliente contra `Database` convierte un .from('tabla_muerta') en un
 // error de compilación en vez de un 404 silencioso en producción a las 5am.
 import type { Database } from "../../../contracts/database.types.ts";
+import { withObservability } from "../_shared/withObservability.ts";
 
 type Db = SupabaseClient<Database>;
 
@@ -118,7 +119,7 @@ interface ARSResult extends ComponentBreakdown {
 // Handler principal
 // ═══════════════════════════════════════════════════════════════════════════
 
-serve(async (req) => {
+serve(withObservability("adherence-engine", async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS });
   }
@@ -174,7 +175,7 @@ serve(async (req) => {
   const durationMs = Date.now() - startedAt;
   console.log(`[adherence-engine] OK en ${durationMs}ms`, summary);
   return json({ ok: true, durationMs, ...summary });
-});
+}));
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Scope — corredoras con plan activo (ver H#2 de la migración 039)
