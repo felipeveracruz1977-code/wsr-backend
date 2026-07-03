@@ -12,31 +12,6 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       achievements: {
@@ -3849,6 +3824,71 @@ export type Database = {
         }
         Returns: string
       }
+      fn_admin_delete_anamnesis: { Args: { p_id: string }; Returns: undefined }
+      fn_admin_resolve_health_alert: {
+        Args: { p_alert_id: string; p_status?: string }
+        Returns: {
+          alert_type: string
+          check_in_id: string | null
+          created_at: string
+          id: string
+          reason: string
+          resolved_at: string | null
+          resolved_by: string | null
+          runner_id: string
+          session_id: string | null
+          severity: string
+          status: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "health_alerts"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      fn_admin_update_training_session: {
+        Args: {
+          p_coach_notes: string
+          p_description: string
+          p_distance_km: number
+          p_duration_min: number
+          p_intensity: string
+          p_pace_target: string
+          p_rpe_target: number
+          p_session_id: string
+          p_session_type: string
+          p_title: string
+        }
+        Returns: {
+          coach_notes: string | null
+          completed_at: string | null
+          created_at: string
+          day_of_week: number
+          description: string | null
+          distance_km: number | null
+          duration_min: number | null
+          id: string
+          intensity: string
+          pace_target: string | null
+          rpe_target: number | null
+          session_type: string
+          status: string
+          title: string | null
+          updated_at: string
+          week_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "training_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      fn_admin_upsert_anamnesis: {
+        Args: { p_id: string; p_payload: Json }
+        Returns: string
+      }
       fn_complete_session_from_app: {
         Args: {
           p_actual_duration?: number
@@ -3880,35 +3920,11 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      fn_dashboard_kpis: {
-        Args: never
-        Returns: {
-          active_runners: number
-          adherencia_promedio: number | null
-          total_checkins: number
-          alerts_amarilla: number
-          alerts_naranja: number
-          alerts_roja: number
-        }[]
-      }
-      fn_dashboard_risk_scores: {
-        Args: never
-        Returns: {
-          runner_id: string
-          nombre_apellido: string
-          email: string
-          score: number
-          level: string
-          days_since_checkin: number | null
-          avg_compliance: number | null
-          avg_motivation: number | null
-          pending_alerts: Json
-        }[]
-      }
       fn_forget_runner: {
         Args: { p_reason?: string; p_runner_id: string }
         Returns: Json
       }
+      fn_get_community_score: { Args: { p_runner_id: string }; Returns: number }
       fn_is_admin_or_super: { Args: never; Returns: boolean }
       fn_is_coach: { Args: never; Returns: boolean }
       fn_runner_id_for_user: { Args: never; Returns: string }
@@ -4605,9 +4621,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       activity_feeling: ["genial", "bien", "normal", "cansada", "dificil"],

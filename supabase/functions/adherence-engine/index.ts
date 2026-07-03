@@ -12,10 +12,14 @@
 // Persistencia: service_role key → bypassa RLS en el proceso batch.
 //
 // Modelo matemático: docs/ARCHITECTURE_ADHERENCE_ENGINE_v2.0.md (aprobado CTO).
-//   ARS = min(100, A + B + C)
+//   ARS = clamp(min(100, A + B + C) - D, 0, 100)
 //     A [0-40] Cumplimiento de sesiones (ventana 28d + tendencia + RPE drift)
 //     B [0-35] Señales conductuales del check-in (motivación, vida, energía)
 //     C [0-25] Inactividad silenciosa (días sin sesión / sin check-in)
+//     D [0-10] Modificador protector: interacción comunitaria (puntos,
+//       logros y asistencia a entrenamientos grupales de los últimos 30 días,
+//       vía RPC de solo lectura fn_get_community_score). Una corredora
+//       comunitariamente activa reduce su riesgo de abandono estimado.
 //
 // FAIL-SAFE: el cálculo de cada corredora está aislado en try/catch. Si una
 // falla, se registra el error y el loop continúa con el resto.
@@ -42,6 +46,7 @@ const CHECKIN_LIMIT = 4; // últimos N check-ins a promediar
 const CAP_A = 40;
 const CAP_B = 35;
 const CAP_C = 25;
+const MAX_COMMUNITY_DISCOUNT = 10; // D: techo del descuento por interacción comunitaria
 const MS_PER_DAY = 86_400_000;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -83,6 +88,8 @@ interface ComponentBreakdown {
   a: number;
   b: number;
   c: number;
+  communityScore: number;
+  communityDiscount: number;
   sessionsAnalyzed: number;
   checkinsAnalyzed: number;
   diasSinSesion: number | null;
@@ -192,21 +199,23 @@ async function fetchScope(db: SupabaseClient): Promise<string[]> {
 async function scoreRunner(db: SupabaseClient, runnerId: string): Promise<ARSResult> {
   const since = isoDaysAgo(WINDOW_DAYS);
 
-  // Las tres consultas son independientes → en paralelo.
-  const [checkIns, activePlan, sessionResults] = await Promise.all([
+  // Las cuatro consultas son independientes → en paralelo.
+  const [checkIns, activePlan, sessionResults, communityScore] = await Promise.all([
     fetchCheckIns(db, runnerId),
     fetchActivePlan(db, runnerId),
     fetchSessionResults(db, runnerId, since),
+    fetchCommunityScore(db, runnerId),
   ]);
 
   const a = computeComponentA(activePlan, sessionResults);
   const c = computeComponentC(sessionResults, checkIns, activePlan);
   const b = computeComponentB(checkIns);
+  const d = computeComponentD(communityScore);
 
-  const score = clamp(a.points + b.points + c.points, 0, 100);
+  const score = clamp(a.points + b.points + c.points - d.discount, 0, 100);
   const nivel = classify(score);
 
-  const reason = buildReason({ score, a, b, c });
+  const reason = buildReason({ score, a, b, c, d });
 
   return {
     runnerId,
@@ -216,6 +225,8 @@ async function scoreRunner(db: SupabaseClient, runnerId: string): Promise<ARSRes
     a: a.points,
     b: b.points,
     c: c.points,
+    communityScore: d.communityScore,
+    communityDiscount: d.discount,
     sessionsAnalyzed: a.eligible,
     checkinsAnalyzed: c.checkinsAnalyzed,
     diasSinSesion: c.diasSinSesion,
@@ -312,6 +323,16 @@ function extractRpeTarget(embed: unknown): number | null {
   const obj = Array.isArray(embed) ? embed[0] : embed;
   const v = (obj as { rpe_target?: number | null } | null)?.rpe_target;
   return typeof v === "number" ? v : null;
+}
+
+// fn_get_community_score (migración 049) — RPC de solo lectura que agrega
+// puntos/logros/asistencia comunitaria de los últimos 30 días en un 0-100.
+// Invocada con el cliente service_role → bypassa RLS, ve el dato real de
+// cada corredora sin importar de quién sea la sesión.
+async function fetchCommunityScore(db: SupabaseClient, runnerId: string): Promise<number> {
+  const { data, error } = await db.rpc("fn_get_community_score", { p_runner_id: runnerId });
+  if (error) throw new Error(`fn_get_community_score: ${error.message}`);
+  return typeof data === "number" ? data : 0;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -532,6 +553,21 @@ function scaleCheckinGap(dias: number | null): number {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// COMPONENTE D — Modificador protector: interacción comunitaria [0-10]
+//
+// A diferencia de A/B/C (que suman riesgo), D resta: una corredora activa en
+// la comunidad (puntos, logros, entrenamientos grupales de los últimos 30d)
+// tiene un ARS más bajo a igualdad de A+B+C. Escala linealmente el score
+// 0-100 de fn_get_community_score a un descuento 0-10 sobre el ARS.
+// ═══════════════════════════════════════════════════════════════════════════
+
+function computeComponentD(communityScore: number): { discount: number; communityScore: number } {
+  const clamped = clamp(communityScore, 0, 100);
+  const discount = Math.round((clamped / 100) * MAX_COMMUNITY_DISCOUNT);
+  return { discount, communityScore: clamped };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // Clasificación y narrativa
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -547,8 +583,9 @@ function buildReason(args: {
   a: ReturnType<typeof computeComponentA>;
   b: ReturnType<typeof computeComponentB>;
   c: ReturnType<typeof computeComponentC>;
+  d: ReturnType<typeof computeComponentD>;
 }): string {
-  const { score, a, b, c } = args;
+  const { score, a, b, c, d } = args;
   const parts: string[] = [`ARS ${score}/100`];
 
   if (a.compliancePct !== null) {
@@ -564,6 +601,10 @@ function buildReason(args: {
 
   if (c.diasSinSesion !== null) {
     parts.push(`${c.diasSinSesion} días sin completar sesión registrada`);
+  }
+
+  if (d.discount > 0) {
+    parts.push(`-${d.discount} por interacción comunitaria (score ${d.communityScore}/100)`);
   }
 
   return parts.join(" — ") + ".";
