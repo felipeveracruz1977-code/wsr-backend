@@ -27,6 +27,12 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+// SSOT: tipos generados desde el esquema real de Supabase (@wsr/contracts).
+// Tipar el cliente contra `Database` convierte un .from('tabla_muerta') en un
+// error de compilación en vez de un 404 silencioso en producción a las 5am.
+import type { Database } from "../../../contracts/database.types.ts";
+
+type Db = SupabaseClient<Database>;
 
 // ── Config / Entorno ────────────────────────────────────────────────────────
 // SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY son inyectadas por el runtime.
@@ -63,7 +69,7 @@ interface CheckInRow {
   created_at: string; // TIMESTAMPTZ
 }
 
-interface PlanSessionRow {
+interface TrainingSessionRow {
   day_of_week: number;
   status: "planned" | "completed" | "skipped";
   session_type: string;
@@ -75,13 +81,13 @@ interface PlanSessionRow {
 interface SessionResultRow {
   completed_at: string;
   actual_rpe: number | null;
-  rpe_target: number | null; // inyectado desde plan_sessions embebido
+  rpe_target: number | null; // inyectado desde training_sessions embebido
 }
 
 interface ActivePlan {
   id: string;
   reference_date: string; // delivered_at ?? created_at (ancla de scheduled_date)
-  sessions: PlanSessionRow[];
+  sessions: TrainingSessionRow[];
 }
 
 interface ComponentBreakdown {
@@ -176,7 +182,7 @@ serve(async (req) => {
 // existencia de un plan con status='active'.
 // ═══════════════════════════════════════════════════════════════════════════
 
-async function fetchScope(db: SupabaseClient): Promise<string[]> {
+async function fetchScope(db: Db): Promise<string[]> {
   const { data, error } = await db
     .from("plans")
     .select("runner_id")
@@ -196,7 +202,7 @@ async function fetchScope(db: SupabaseClient): Promise<string[]> {
 // Cálculo del ARS de una corredora
 // ═══════════════════════════════════════════════════════════════════════════
 
-async function scoreRunner(db: SupabaseClient, runnerId: string): Promise<ARSResult> {
+async function scoreRunner(db: Db, runnerId: string): Promise<ARSResult> {
   const since = isoDaysAgo(WINDOW_DAYS);
 
   // Las cuatro consultas son independientes → en paralelo.
@@ -241,24 +247,29 @@ async function scoreRunner(db: SupabaseClient, runnerId: string): Promise<ARSRes
 
 // ─── Data fetchers ──────────────────────────────────────────────────────────
 
-async function fetchCheckIns(db: SupabaseClient, runnerId: string): Promise<CheckInRow[]> {
+async function fetchCheckIns(db: Db, runnerId: string): Promise<CheckInRow[]> {
+  // Tabla real: plan_check_ins (la tabla `check_ins` no existe en el esquema
+  // clínico — ver migración 049 / auditoría SSOT). Columnas sin cambios.
   const { data, error } = await db
-    .from("check_ins")
+    .from("plan_check_ins")
     .select("motivation, energy, life_changes, week_start, created_at")
     .eq("runner_id", runnerId)
     .order("week_start", { ascending: false })
     .limit(CHECKIN_LIMIT);
 
-  if (error) throw new Error(`check_ins: ${error.message}`);
+  if (error) throw new Error(`plan_check_ins: ${error.message}`);
   return (data ?? []) as CheckInRow[];
 }
 
-async function fetchActivePlan(db: SupabaseClient, runnerId: string): Promise<ActivePlan | null> {
-  // Embebemos training_weeks → plan_sessions en una sola consulta.
+async function fetchActivePlan(db: Db, runnerId: string): Promise<ActivePlan | null> {
+  // Embebemos training_weeks → training_sessions en una sola consulta.
+  // (La tabla `plan_sessions` no existe en el esquema clínico; la tabla real
+  // de sesiones individuales es `training_sessions`, FK training_sessions.week_id
+  // → training_weeks.id — ver migración 049 / auditoría SSOT.)
   const { data, error } = await db
     .from("plans")
     .select(
-      "id, delivered_at, created_at, training_weeks(week_number, plan_sessions(day_of_week, status, session_type, completed_at, rpe_target))",
+      "id, delivered_at, created_at, training_weeks(week_number, training_sessions(day_of_week, status, session_type, completed_at, rpe_target))",
     )
     .eq("runner_id", runnerId)
     .eq("status", "active")
@@ -273,16 +284,16 @@ async function fetchActivePlan(db: SupabaseClient, runnerId: string): Promise<Ac
         created_at: string;
         training_weeks: Array<{
           week_number: number;
-          plan_sessions: Array<Omit<PlanSessionRow, "week_number">>;
+          training_sessions: Array<Omit<TrainingSessionRow, "week_number">>;
         }> | null;
       }
     | undefined;
 
   if (!plan) return null;
 
-  const sessions: PlanSessionRow[] = [];
+  const sessions: TrainingSessionRow[] = [];
   for (const week of plan.training_weeks ?? []) {
-    for (const s of week.plan_sessions ?? []) {
+    for (const s of week.training_sessions ?? []) {
       sessions.push({ ...s, week_number: week.week_number });
     }
   }
@@ -295,14 +306,16 @@ async function fetchActivePlan(db: SupabaseClient, runnerId: string): Promise<Ac
 }
 
 async function fetchSessionResults(
-  db: SupabaseClient,
+  db: Db,
   runnerId: string,
   since: string,
 ): Promise<SessionResultRow[]> {
   // source != 'clone' → excluye telemetría duplicada por versionado de planes.
+  // Embed real: session_results.training_session_id → training_sessions.id
+  // (no existe `plan_sessions` — ver migración 049 / auditoría SSOT).
   const { data, error } = await db
     .from("session_results")
-    .select("completed_at, actual_rpe, source, plan_sessions(rpe_target)")
+    .select("completed_at, actual_rpe, source, training_sessions(rpe_target)")
     .eq("runner_id", runnerId)
     .neq("source", "clone")
     .gte("completed_at", since)
@@ -313,7 +326,7 @@ async function fetchSessionResults(
   return (data ?? []).map((r: Record<string, unknown>) => ({
     completed_at: r.completed_at as string,
     actual_rpe: (r.actual_rpe as number | null) ?? null,
-    rpe_target: extractRpeTarget(r.plan_sessions),
+    rpe_target: extractRpeTarget(r.training_sessions),
   }));
 }
 
@@ -329,7 +342,7 @@ function extractRpeTarget(embed: unknown): number | null {
 // puntos/logros/asistencia comunitaria de los últimos 30 días en un 0-100.
 // Invocada con el cliente service_role → bypassa RLS, ve el dato real de
 // cada corredora sin importar de quién sea la sesión.
-async function fetchCommunityScore(db: SupabaseClient, runnerId: string): Promise<number> {
+async function fetchCommunityScore(db: Db, runnerId: string): Promise<number> {
   const { data, error } = await db.rpc("fn_get_community_score", { p_runner_id: runnerId });
   if (error) throw new Error(`fn_get_community_score: ${error.message}`);
   return typeof data === "number" ? data : 0;
@@ -615,7 +628,7 @@ function buildReason(args: {
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function persistScore(
-  db: SupabaseClient,
+  db: Db,
   r: ARSResult,
   triggeredBy: string,
 ): Promise<void> {
@@ -642,7 +655,7 @@ async function persistScore(
   if (error) throw new Error(`upsert adherence_scores: ${error.message}`);
 }
 
-async function maybeCreateAlert(db: SupabaseClient, r: ARSResult): Promise<boolean> {
+async function maybeCreateAlert(db: Db, r: ARSResult): Promise<boolean> {
   // No duplicar: una sola alerta de adherencia por corredora por día.
   const { data: existing, error: selErr } = await db
     .from("health_alerts")
