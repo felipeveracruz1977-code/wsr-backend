@@ -3880,6 +3880,31 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      fn_dashboard_kpis: {
+        Args: never
+        Returns: {
+          active_runners: number
+          adherencia_promedio: number | null
+          total_checkins: number
+          alerts_amarilla: number
+          alerts_naranja: number
+          alerts_roja: number
+        }[]
+      }
+      fn_dashboard_risk_scores: {
+        Args: never
+        Returns: {
+          runner_id: string
+          nombre_apellido: string
+          email: string
+          score: number
+          level: string
+          days_since_checkin: number | null
+          avg_compliance: number | null
+          avg_motivation: number | null
+          pending_alerts: Json
+        }[]
+      }
       fn_forget_runner: {
         Args: { p_reason?: string; p_runner_id: string }
         Returns: Json
