@@ -2824,6 +2824,7 @@ export type Database = {
         Row: {
           coach_notes: string | null
           completed_at: string | null
+          cooldown_desc: string | null
           created_at: string
           day_of_week: number
           description: string | null
@@ -2831,17 +2832,20 @@ export type Database = {
           duration_min: number | null
           id: string
           intensity: string
+          main_desc: string | null
           pace_target: string | null
           rpe_target: number | null
           session_type: string
           status: string
           title: string | null
           updated_at: string
+          warmup_desc: string | null
           week_id: string
         }
         Insert: {
           coach_notes?: string | null
           completed_at?: string | null
+          cooldown_desc?: string | null
           created_at?: string
           day_of_week: number
           description?: string | null
@@ -2849,17 +2853,20 @@ export type Database = {
           duration_min?: number | null
           id?: string
           intensity?: string
+          main_desc?: string | null
           pace_target?: string | null
           rpe_target?: number | null
           session_type?: string
           status?: string
           title?: string | null
           updated_at?: string
+          warmup_desc?: string | null
           week_id: string
         }
         Update: {
           coach_notes?: string | null
           completed_at?: string | null
+          cooldown_desc?: string | null
           created_at?: string
           day_of_week?: number
           description?: string | null
@@ -2867,12 +2874,14 @@ export type Database = {
           duration_min?: number | null
           id?: string
           intensity?: string
+          main_desc?: string | null
           pace_target?: string | null
           rpe_target?: number | null
           session_type?: string
           status?: string
           title?: string | null
           updated_at?: string
+          warmup_desc?: string | null
           week_id?: string
         }
         Relationships: [
@@ -3883,19 +3892,23 @@ export type Database = {
       fn_admin_update_training_session: {
         Args: {
           p_coach_notes: string
+          p_cooldown_desc?: string
           p_description: string
           p_distance_km: number
           p_duration_min: number
           p_intensity: string
+          p_main_desc?: string
           p_pace_target: string
           p_rpe_target: number
           p_session_id: string
           p_session_type: string
           p_title: string
+          p_warmup_desc?: string
         }
         Returns: {
           coach_notes: string | null
           completed_at: string | null
+          cooldown_desc: string | null
           created_at: string
           day_of_week: number
           description: string | null
@@ -3903,12 +3916,14 @@ export type Database = {
           duration_min: number | null
           id: string
           intensity: string
+          main_desc: string | null
           pace_target: string | null
           rpe_target: number | null
           session_type: string
           status: string
           title: string | null
           updated_at: string
+          warmup_desc: string | null
           week_id: string
         }
         SetofOptions: {
@@ -3922,6 +3937,13 @@ export type Database = {
         Args: { p_id: string; p_payload: Json }
         Returns: string
       }
+      fn_anamnesis_token_valido: {
+        Args: { p_token_id: string }
+        Returns: boolean
+      }
+      fn_coach_owns_plan: { Args: { p_plan_id: string }; Returns: boolean }
+      fn_coach_owns_runner: { Args: { p_runner_id: string }; Returns: boolean }
+      fn_coach_owns_week: { Args: { p_week_id: string }; Returns: boolean }
       fn_complete_session_from_app: {
         Args: {
           p_actual_duration?: number
@@ -3961,6 +3983,8 @@ export type Database = {
       fn_is_admin_or_super: { Args: never; Returns: boolean }
       fn_is_coach: { Args: never; Returns: boolean }
       fn_runner_id_for_user: { Args: never; Returns: string }
+      fn_runner_owns_plan: { Args: { p_plan_id: string }; Returns: boolean }
+      fn_runner_owns_week: { Args: { p_week_id: string }; Returns: boolean }
       fn_submit_check_in: {
         Args: {
           p_comments?: string
@@ -4065,11 +4089,13 @@ export type Database = {
           actual_rpe: number
           coach_message: string
           completed_at: string
+          cooldown_desc: string
           day_of_week: number
           delivered_at: string
           distance_km: number
           duration_min: number
           intensity: string
+          main_desc: string
           pace_target: string
           pain_score: number
           plan_goal: string
@@ -4083,6 +4109,7 @@ export type Database = {
           session_title: string
           session_type: string
           version_tag: string
+          warmup_desc: string
           week_focus: string
           week_id: string
           week_number: number
