@@ -3866,6 +3866,10 @@ export type Database = {
         }
         Returns: string
       }
+      fn_adapt_plan: {
+        Args: { p_adaptations: Json; p_plan_id: string }
+        Returns: string
+      }
       fn_admin_delete_anamnesis: { Args: { p_id: string }; Returns: undefined }
       fn_admin_resolve_health_alert: {
         Args: { p_alert_id: string; p_status?: string }
