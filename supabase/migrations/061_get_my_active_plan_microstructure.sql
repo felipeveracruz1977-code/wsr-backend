@@ -1,5 +1,5 @@
 -- ═════════════════════════════════════════════════════════════════════════
--- 057_get_my_active_plan_microstructure.sql
+-- 061_get_my_active_plan_microstructure.sql
 --
 -- Planning Engine™ v2.0: la app móvil consume el plan activo vía la RPC
 -- get_my_active_plan (solo lectura, RLS resuelve autorización — sin

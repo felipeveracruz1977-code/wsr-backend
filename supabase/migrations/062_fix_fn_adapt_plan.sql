@@ -1,5 +1,5 @@
 -- ═════════════════════════════════════════════════════════════════════════
--- 058_fix_fn_adapt_plan.sql
+-- 062_fix_fn_adapt_plan.sql
 --
 -- Reparación de deuda técnica crítica (Engine 05 — Adaptation Engine™):
 -- fn_adapt_plan NUNCA existió en el clúster APP. PlanesPersonalesTab.tsx ya

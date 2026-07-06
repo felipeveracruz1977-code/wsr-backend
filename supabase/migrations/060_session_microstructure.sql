@@ -1,5 +1,5 @@
 -- ═════════════════════════════════════════════════════════════════════════
--- 056_session_microstructure.sql
+-- 060_session_microstructure.sql
 --
 -- Planning Engine™ / Coach Copilot™ v2.0 (Human-Augmented AI):
 --   1. Microestructura de sesión: warmup_desc / main_desc / cooldown_desc.
