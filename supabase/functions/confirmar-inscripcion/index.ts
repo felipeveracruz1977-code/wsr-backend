@@ -11,16 +11,32 @@ const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const FROM = "Woman Social Run <felipe@womansocialrun.cl>";
 const INSTAGRAM_URL = "https://www.instagram.com/woman_social_run/";
 
-// Headers CORS requeridos para invocaciones desde el navegador
-const CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+// Headers CORS requeridos para invocaciones desde el navegador.
+// Solo se aceptan los orígenes del ecosistema WSR: producción y desarrollo local.
+const ALLOWED_ORIGINS = [
+  "https://www.womansocialrun.cl",
+  "https://womansocialrun.cl",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+
+function corsFor(req: Request): Record<string, string> {
+  const origin = req.headers.get("Origin") ?? "";
+  return {
+    "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin)
+      ? origin
+      : ALLOWED_ORIGINS[0],
+    Vary: "Origin",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type",
+  };
+}
 
 // ── Handler principal ─────────────────────────────────────────────────────────
 
 serve(async (req) => {
+  const CORS = corsFor(req);
   // Preflight CORS
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS });
@@ -40,7 +56,7 @@ serve(async (req) => {
     const { email, nombre, training } = body;
 
     if (!email || !nombre || !training?.titulo) {
-      return json({ error: "missing fields" }, 400);
+      return json({ error: "missing fields" }, 400, CORS);
     }
 
     const primerNombre = primerToken(nombre);
@@ -64,19 +80,23 @@ serve(async (req) => {
       html: htmlConfirmacion(primerNombre, training),
     });
 
-    return json({ ok: true, bienvenida: esPrimera });
+    return json({ ok: true, bienvenida: esPrimera }, 200, CORS);
   } catch (err) {
     console.error("[confirmar-inscripcion]", err);
-    return json({ error: "internal error" }, 500);
+    return json({ error: "internal error" }, 500, CORS);
   }
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function json(data: unknown, status = 200) {
+function json(
+  data: unknown,
+  status = 200,
+  cors: Record<string, string> = {},
+) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...CORS, "Content-Type": "application/json" },
+    headers: { ...cors, "Content-Type": "application/json" },
   });
 }
 

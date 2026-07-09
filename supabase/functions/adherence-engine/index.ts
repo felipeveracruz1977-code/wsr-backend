@@ -41,10 +41,14 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const CRON_SECRET = Deno.env.get("CRON_SECRET") ?? "";
 
+// Función invocada exclusivamente server-to-server por pg_cron (x-cron-secret);
+// los navegadores no tienen por qué alcanzarla: CORS restringido al origen WSR.
 const CORS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://www.womansocialrun.cl",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-cron-secret",
+  Vary: "Origin",
 };
 
 // ── Constantes del modelo (ventanas y techos por componente) ────────────────
