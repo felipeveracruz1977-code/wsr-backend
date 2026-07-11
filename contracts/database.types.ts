@@ -1600,6 +1600,41 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_benefit_claims: {
+        Row: {
+          claimed_at: string
+          created_at: string
+          id: string
+          partner_slug: string
+          runner_id: string
+          updated_at: string
+        }
+        Insert: {
+          claimed_at?: string
+          created_at?: string
+          id?: string
+          partner_slug: string
+          runner_id: string
+          updated_at?: string
+        }
+        Update: {
+          claimed_at?: string
+          created_at?: string
+          id?: string
+          partner_slug?: string
+          runner_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_benefit_claims_runner_id_fkey"
+            columns: ["runner_id"]
+            isOneToOne: false
+            referencedRelation: "runners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       personal_trainings: {
         Row: {
           coach_id: string
@@ -2794,7 +2829,7 @@ export type Database = {
             foreignKeyName: "training_pacers_pacer_id_fkey"
             columns: ["pacer_id"]
             isOneToOne: false
-            referencedRelation: "wsr_pacers"
+            referencedRelation: "web_registrations"
             referencedColumns: ["id"]
           },
           {
