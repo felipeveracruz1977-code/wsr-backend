@@ -158,10 +158,8 @@ serve(withObservability("adherence-engine", async (req) => {
         await persistScore(db, result, triggeredBy);
         summary.scored++;
 
-        if (result.nivel !== "verde") {
-          const created = await maybeCreateAlert(db, result);
-          if (created) summary.alerts++;
-        }
+        const created = await reconcileAlert(db, result);
+        if (created) summary.alerts++;
       } catch (err) {
         summary.failed++;
         const msg = err instanceof Error ? err.message : String(err);
@@ -660,18 +658,24 @@ async function persistScore(
   if (error) throw new Error(`upsert adherence_scores: ${error.message}`);
 }
 
-async function maybeCreateAlert(db: Db, r: ARSResult): Promise<boolean> {
-  // No duplicar: una sola alerta de adherencia por corredora por día.
-  const { data: existing, error: selErr } = await db
+// Una corredora tiene a lo sumo UNA alerta de adherencia "pendiente" viva a
+// la vez: la lectura de hoy reemplaza a la de ayer en vez de apilarse sobre
+// ella. Antes de este fix, cada corrida diaria insertaba una fila nueva sin
+// tocar las anteriores → el badge "Check-ins" del admin acumulaba una
+// alerta más por día indefinidamente (11 pendientes para una sola
+// corredora tras 9 días en riesgo), y ninguna de esas filas era visible ni
+// resoluble desde la UI porque check_in_id es NULL para este alert_type.
+async function reconcileAlert(db: Db, r: ARSResult): Promise<boolean> {
+  const { error: supersedeErr } = await db
     .from("health_alerts")
-    .select("id")
+    .update({ status: "descartada", resolved_at: new Date().toISOString() })
     .eq("runner_id", r.runnerId)
     .eq("alert_type", "adherencia")
-    .gte("created_at", `${todayISO()}T00:00:00Z`)
-    .limit(1);
+    .eq("status", "pendiente");
 
-  if (selErr) throw new Error(`select health_alerts: ${selErr.message}`);
-  if (existing && existing.length > 0) return false;
+  if (supersedeErr) throw new Error(`supersede health_alerts: ${supersedeErr.message}`);
+
+  if (r.nivel === "verde") return false; // riesgo verde hoy: nada que alertar
 
   const { error: insErr } = await db.from("health_alerts").insert({
     runner_id: r.runnerId,
