@@ -2386,6 +2386,9 @@ export type Database = {
           nivel_educativo: string | null
           nombre_apellido: string
           ocupacion: string | null
+          parental_consent_confirmed_at: string | null
+          parental_consent_confirmed_by: string | null
+          parental_consent_sensitive_data: boolean
           participa_carreras: string | null
           productos_interes: string | null
           redes_sociales: string | null
@@ -2419,6 +2422,9 @@ export type Database = {
           nivel_educativo?: string | null
           nombre_apellido: string
           ocupacion?: string | null
+          parental_consent_confirmed_at?: string | null
+          parental_consent_confirmed_by?: string | null
+          parental_consent_sensitive_data?: boolean
           participa_carreras?: string | null
           productos_interes?: string | null
           redes_sociales?: string | null
@@ -2452,6 +2458,9 @@ export type Database = {
           nivel_educativo?: string | null
           nombre_apellido?: string
           ocupacion?: string | null
+          parental_consent_confirmed_at?: string | null
+          parental_consent_confirmed_by?: string | null
+          parental_consent_sensitive_data?: boolean
           participa_carreras?: string | null
           productos_interes?: string | null
           redes_sociales?: string | null
