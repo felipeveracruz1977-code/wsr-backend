@@ -2368,6 +2368,7 @@ export type Database = {
           acepta_marketing: boolean
           autoriza_datos: boolean | null
           autoriza_imagen: boolean
+          autoriza_perfil_sponsors: boolean
           coach_id: string | null
           comuna: string | null
           consent_version: string | null
@@ -2404,6 +2405,7 @@ export type Database = {
           acepta_marketing?: boolean
           autoriza_datos?: boolean | null
           autoriza_imagen?: boolean
+          autoriza_perfil_sponsors?: boolean
           coach_id?: string | null
           comuna?: string | null
           consent_version?: string | null
@@ -2440,6 +2442,7 @@ export type Database = {
           acepta_marketing?: boolean
           autoriza_datos?: boolean | null
           autoriza_imagen?: boolean
+          autoriza_perfil_sponsors?: boolean
           coach_id?: string | null
           comuna?: string | null
           consent_version?: string | null
