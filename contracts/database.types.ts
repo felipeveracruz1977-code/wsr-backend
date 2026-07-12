@@ -912,6 +912,41 @@ export type Database = {
         }
         Relationships: []
       }
+      checkin_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          runner_id: string
+          token: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          runner_id: string
+          token?: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          runner_id?: string
+          token?: string
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkin_tokens_runner_id_fkey"
+            columns: ["runner_id"]
+            isOneToOne: false
+            referencedRelation: "runners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checkins: {
         Row: {
           created_at: string
@@ -2330,9 +2365,13 @@ export type Database = {
       }
       runners: {
         Row: {
+          acepta_marketing: boolean
           autoriza_datos: boolean | null
+          autoriza_imagen: boolean
           coach_id: string | null
           comuna: string | null
+          consent_version: string | null
+          consents_updated_at: string | null
           control_envio: string | null
           created_at: string
           email: string
@@ -2359,9 +2398,13 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          acepta_marketing?: boolean
           autoriza_datos?: boolean | null
+          autoriza_imagen?: boolean
           coach_id?: string | null
           comuna?: string | null
+          consent_version?: string | null
+          consents_updated_at?: string | null
           control_envio?: string | null
           created_at?: string
           email: string
@@ -2388,9 +2431,13 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          acepta_marketing?: boolean
           autoriza_datos?: boolean | null
+          autoriza_imagen?: boolean
           coach_id?: string | null
           comuna?: string | null
+          consent_version?: string | null
+          consents_updated_at?: string | null
           control_envio?: string | null
           created_at?: string
           email?: string
@@ -4040,7 +4087,24 @@ export type Database = {
         }
         Returns: Json
       }
+      fn_submit_check_in_token: {
+        Args: {
+          p_comments?: string
+          p_energy: number
+          p_life_changes?: boolean
+          p_life_changes_detail?: string
+          p_motivation: number
+          p_pain: number
+          p_pain_location?: string
+          p_sessions_completed: number
+          p_sessions_planned: number
+          p_sleep_quality: number
+          p_token: string
+        }
+        Returns: Json
+      }
       fn_validate_anamnesis_token: { Args: { p_token: string }; Returns: Json }
+      fn_validate_checkin_token: { Args: { p_token: string }; Returns: Json }
       get_active_checkins: {
         Args: { p_training_id: string }
         Returns: {
