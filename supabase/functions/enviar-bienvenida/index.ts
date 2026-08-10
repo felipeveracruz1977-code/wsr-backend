@@ -1,3 +1,11 @@
+// NUNCA DESPLEGADA / NO USAR (nota agregada 2026-08-10): esta función se
+// escribió para colgarse de un Database Webhook AFTER INSERT en `runners`,
+// pero ese webhook nunca se creó — por eso nadie recibía correo de
+// bienvenida al registrarse solo en la comunidad (sin inscribirse a un
+// entrenamiento). El hueco se cerró con un trigger SQL directo en vez de
+// esta función: ver wsr_enviar_bienvenida_runner en
+// supabase/migrations/084_runner_signup_welcome_email.sql. Se deja este
+// archivo como referencia histórica del HTML del correo, no para desplegar.
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
