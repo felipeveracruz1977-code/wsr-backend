@@ -12,31 +12,6 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       achievements: {
@@ -1762,6 +1737,33 @@ export type Database = {
           perks?: Json
           sort_order?: number
           tier?: Database["public"]["Enums"]["loyalty_tier"]
+        }
+        Relationships: []
+      }
+      marcas_patrocinadoras: {
+        Row: {
+          activa: boolean
+          actualizado_en: string
+          creado_en: string
+          id: string
+          nombre: string
+          usuario_instagram: string
+        }
+        Insert: {
+          activa?: boolean
+          actualizado_en?: string
+          creado_en?: string
+          id?: string
+          nombre: string
+          usuario_instagram: string
+        }
+        Update: {
+          activa?: boolean
+          actualizado_en?: string
+          creado_en?: string
+          id?: string
+          nombre?: string
+          usuario_instagram?: string
         }
         Relationships: []
       }
@@ -5469,9 +5471,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       activity_feeling: ["genial", "bien", "normal", "cansada", "dificil"],
