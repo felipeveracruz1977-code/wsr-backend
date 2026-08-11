@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       achievements: {
@@ -1339,6 +1364,228 @@ export type Database = {
           },
         ]
       }
+      instagram_dia_snapshots: {
+        Row: {
+          alcance: number | null
+          capturado_en: string
+          comentarios: number | null
+          compartidos: number | null
+          corrida_dia: string
+          cuentas_activadas: number | null
+          fecha: string
+          guardados: number | null
+          interacciones: number | null
+          me_gusta: number | null
+          reposteos: number | null
+          respuestas: number | null
+          seguidores_nuevos: number | null
+          seguidores_totales: number | null
+          toques_botones_perfil: number | null
+          visualizaciones: number | null
+        }
+        Insert: {
+          alcance?: number | null
+          capturado_en?: string
+          comentarios?: number | null
+          compartidos?: number | null
+          corrida_dia: string
+          cuentas_activadas?: number | null
+          fecha: string
+          guardados?: number | null
+          interacciones?: number | null
+          me_gusta?: number | null
+          reposteos?: number | null
+          respuestas?: number | null
+          seguidores_nuevos?: number | null
+          seguidores_totales?: number | null
+          toques_botones_perfil?: number | null
+          visualizaciones?: number | null
+        }
+        Update: {
+          alcance?: number | null
+          capturado_en?: string
+          comentarios?: number | null
+          compartidos?: number | null
+          corrida_dia?: string
+          cuentas_activadas?: number | null
+          fecha?: string
+          guardados?: number | null
+          interacciones?: number | null
+          me_gusta?: number | null
+          reposteos?: number | null
+          respuestas?: number | null
+          seguidores_nuevos?: number | null
+          seguidores_totales?: number | null
+          toques_botones_perfil?: number | null
+          visualizaciones?: number | null
+        }
+        Relationships: []
+      }
+      instagram_ingesta_corridas: {
+        Row: {
+          advertencias: string[]
+          error: string | null
+          estado: string
+          filas_dia: number
+          filas_pieza: number
+          filas_story: number
+          id: number
+          iniciada_en: string
+          rango_desde: string | null
+          rango_hasta: string | null
+          tarea: string
+          terminada_en: string | null
+        }
+        Insert: {
+          advertencias?: string[]
+          error?: string | null
+          estado?: string
+          filas_dia?: number
+          filas_pieza?: number
+          filas_story?: number
+          id?: never
+          iniciada_en?: string
+          rango_desde?: string | null
+          rango_hasta?: string | null
+          tarea: string
+          terminada_en?: string | null
+        }
+        Update: {
+          advertencias?: string[]
+          error?: string | null
+          estado?: string
+          filas_dia?: number
+          filas_pieza?: number
+          filas_story?: number
+          id?: never
+          iniciada_en?: string
+          rango_desde?: string | null
+          rango_hasta?: string | null
+          tarea?: string
+          terminada_en?: string | null
+        }
+        Relationships: []
+      }
+      instagram_pieza_snapshots: {
+        Row: {
+          actividad_perfil: number | null
+          alcance: number | null
+          caption: string | null
+          capturado_en: string
+          comentarios: number | null
+          compartidos: number | null
+          corrida_dia: string
+          formato: string | null
+          guardados: number | null
+          interacciones: number | null
+          me_gusta: number | null
+          media_id: string
+          permalink: string | null
+          publicada_en: string | null
+          reel_tiempo_medio_ms: number | null
+          reel_tiempo_total_ms: number | null
+          seguidores_ganados: number | null
+          tipo: string | null
+          visitas_perfil: number | null
+          visualizaciones: number | null
+        }
+        Insert: {
+          actividad_perfil?: number | null
+          alcance?: number | null
+          caption?: string | null
+          capturado_en?: string
+          comentarios?: number | null
+          compartidos?: number | null
+          corrida_dia: string
+          formato?: string | null
+          guardados?: number | null
+          interacciones?: number | null
+          me_gusta?: number | null
+          media_id: string
+          permalink?: string | null
+          publicada_en?: string | null
+          reel_tiempo_medio_ms?: number | null
+          reel_tiempo_total_ms?: number | null
+          seguidores_ganados?: number | null
+          tipo?: string | null
+          visitas_perfil?: number | null
+          visualizaciones?: number | null
+        }
+        Update: {
+          actividad_perfil?: number | null
+          alcance?: number | null
+          caption?: string | null
+          capturado_en?: string
+          comentarios?: number | null
+          compartidos?: number | null
+          corrida_dia?: string
+          formato?: string | null
+          guardados?: number | null
+          interacciones?: number | null
+          me_gusta?: number | null
+          media_id?: string
+          permalink?: string | null
+          publicada_en?: string | null
+          reel_tiempo_medio_ms?: number | null
+          reel_tiempo_total_ms?: number | null
+          seguidores_ganados?: number | null
+          tipo?: string | null
+          visitas_perfil?: number | null
+          visualizaciones?: number | null
+        }
+        Relationships: []
+      }
+      instagram_stories_capturadas: {
+        Row: {
+          alcance: number | null
+          capturada_en: string
+          compartidos: number | null
+          creado_en: string
+          interacciones: number | null
+          permalink: string | null
+          publicada_en: string
+          respuestas: number | null
+          salidas: number | null
+          story_id: string
+          thumbnail_url: string | null
+          toques_adelante: number | null
+          toques_atras: number | null
+          visualizaciones: number | null
+        }
+        Insert: {
+          alcance?: number | null
+          capturada_en?: string
+          compartidos?: number | null
+          creado_en?: string
+          interacciones?: number | null
+          permalink?: string | null
+          publicada_en: string
+          respuestas?: number | null
+          salidas?: number | null
+          story_id: string
+          thumbnail_url?: string | null
+          toques_adelante?: number | null
+          toques_atras?: number | null
+          visualizaciones?: number | null
+        }
+        Update: {
+          alcance?: number | null
+          capturada_en?: string
+          compartidos?: number | null
+          creado_en?: string
+          interacciones?: number | null
+          permalink?: string | null
+          publicada_en?: string
+          respuestas?: number | null
+          salidas?: number | null
+          story_id?: string
+          thumbnail_url?: string | null
+          toques_adelante?: number | null
+          toques_atras?: number | null
+          visualizaciones?: number | null
+        }
+        Relationships: []
+      }
       legacy_web_registrations: {
         Row: {
           app_registration_id: string | null
@@ -1455,6 +1702,13 @@ export type Database = {
           web_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "legacy_web_trainings_app_training_id_fkey"
+            columns: ["app_training_id"]
+            isOneToOne: false
+            referencedRelation: "admin_trainings_view"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "legacy_web_trainings_app_training_id_fkey"
             columns: ["app_training_id"]
@@ -2124,6 +2378,13 @@ export type Database = {
             foreignKeyName: "registrations_training_id_fkey"
             columns: ["training_id"]
             isOneToOne: false
+            referencedRelation: "admin_trainings_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registrations_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
             referencedRelation: "training_with_counts"
             referencedColumns: ["id"]
           },
@@ -2709,6 +2970,13 @@ export type Database = {
             foreignKeyName: "training_checkins_training_id_fkey"
             columns: ["training_id"]
             isOneToOne: false
+            referencedRelation: "admin_trainings_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_checkins_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
             referencedRelation: "training_with_counts"
             referencedColumns: ["id"]
           },
@@ -2799,6 +3067,13 @@ export type Database = {
             foreignKeyName: "training_groups_training_id_fkey"
             columns: ["training_id"]
             isOneToOne: false
+            referencedRelation: "admin_trainings_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_groups_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
             referencedRelation: "training_with_counts"
             referencedColumns: ["id"]
           },
@@ -2811,6 +3086,68 @@ export type Database = {
           },
           {
             foreignKeyName: "training_groups_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "trainings_web"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training_invitations: {
+        Row: {
+          created_at: string
+          id: string
+          invited_at: string
+          invited_by: string
+          responded_at: string | null
+          runner_id: string
+          status: string
+          training_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          invited_at?: string
+          invited_by: string
+          responded_at?: string | null
+          runner_id: string
+          status?: string
+          training_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invited_at?: string
+          invited_by?: string
+          responded_at?: string | null
+          runner_id?: string
+          status?: string
+          training_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_invitations_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "admin_trainings_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_invitations_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "training_with_counts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_invitations_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "trainings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_invitations_training_id_fkey"
             columns: ["training_id"]
             isOneToOne: false
             referencedRelation: "trainings_web"
@@ -2841,6 +3178,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "training_leaders_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "admin_trainings_view"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "training_leaders_training_id_fkey"
             columns: ["training_id"]
@@ -2889,6 +3233,13 @@ export type Database = {
             columns: ["pacer_id"]
             isOneToOne: false
             referencedRelation: "web_registrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_pacers_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "admin_trainings_view"
             referencedColumns: ["id"]
           },
           {
@@ -3024,6 +3375,13 @@ export type Database = {
             foreignKeyName: "training_sos_alerts_training_id_fkey"
             columns: ["training_id"]
             isOneToOne: false
+            referencedRelation: "admin_trainings_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_sos_alerts_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
             referencedRelation: "training_with_counts"
             referencedColumns: ["id"]
           },
@@ -3072,6 +3430,13 @@ export type Database = {
           would_recommend?: boolean
         }
         Relationships: [
+          {
+            foreignKeyName: "training_surveys_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "admin_trainings_view"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "training_surveys_training_id_fkey"
             columns: ["training_id"]
@@ -3144,11 +3509,13 @@ export type Database = {
           coach_id: string | null
           cover_image_url: string | null
           created_at: string
+          deleted_at: string | null
           descripcion: string | null
           description: string | null
           distance_km: number | null
           id: string
           imagen_url: string | null
+          is_private: boolean
           latitude: number | null
           location_detail: string | null
           location_maps_url: string | null
@@ -3175,11 +3542,13 @@ export type Database = {
           coach_id?: string | null
           cover_image_url?: string | null
           created_at?: string
+          deleted_at?: string | null
           descripcion?: string | null
           description?: string | null
           distance_km?: number | null
           id?: string
           imagen_url?: string | null
+          is_private?: boolean
           latitude?: number | null
           location_detail?: string | null
           location_maps_url?: string | null
@@ -3206,11 +3575,13 @@ export type Database = {
           coach_id?: string | null
           cover_image_url?: string | null
           created_at?: string
+          deleted_at?: string | null
           descripcion?: string | null
           description?: string | null
           distance_km?: number | null
           id?: string
           imagen_url?: string | null
+          is_private?: boolean
           latitude?: number | null
           location_detail?: string | null
           location_maps_url?: string | null
@@ -3405,6 +3776,92 @@ export type Database = {
         }
         Relationships: []
       }
+      valorizacion_parametros: {
+        Row: {
+          clave: string
+          fuente: string
+          nota: string | null
+          unidad: string
+          valor: number
+          vigente_desde: string
+        }
+        Insert: {
+          clave: string
+          fuente: string
+          nota?: string | null
+          unidad: string
+          valor: number
+          vigente_desde?: string
+        }
+        Update: {
+          clave?: string
+          fuente?: string
+          nota?: string | null
+          unidad?: string
+          valor?: number
+          vigente_desde?: string
+        }
+        Relationships: []
+      }
+      vip_event_invitations: {
+        Row: {
+          email: string
+          id: string
+          invited_at: string
+          invited_by: string
+          motivo: string
+          nombre: string | null
+          training_id: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          invited_at?: string
+          invited_by: string
+          motivo: string
+          nombre?: string | null
+          training_id: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          invited_at?: string
+          invited_by?: string
+          motivo?: string
+          nombre?: string | null
+          training_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vip_event_invitations_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "admin_trainings_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vip_event_invitations_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "training_with_counts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vip_event_invitations_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "trainings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vip_event_invitations_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "trainings_web"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       web_registrations: {
         Row: {
           anexo_a_aceptado_en: string | null
@@ -3467,6 +3924,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "web_registrations_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "admin_trainings_view"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "web_registrations_training_id_fkey"
             columns: ["training_id"]
@@ -3543,6 +4007,48 @@ export type Database = {
       }
     }
     Views: {
+      admin_trainings_view: {
+        Row: {
+          cupos_totales: number | null
+          estado: string | null
+          fecha_hora: string | null
+          id: string | null
+          is_private: boolean | null
+          latitud: number | null
+          longitud: number | null
+          pacer_nombre: string | null
+          titulo_entrenamiento: string | null
+          ubicacion: string | null
+          ubicacion_texto: string | null
+        }
+        Insert: {
+          cupos_totales?: number | null
+          estado?: never
+          fecha_hora?: string | null
+          id?: string | null
+          is_private?: boolean | null
+          latitud?: number | null
+          longitud?: number | null
+          pacer_nombre?: string | null
+          titulo_entrenamiento?: string | null
+          ubicacion?: string | null
+          ubicacion_texto?: string | null
+        }
+        Update: {
+          cupos_totales?: number | null
+          estado?: never
+          fecha_hora?: string | null
+          id?: string | null
+          is_private?: boolean | null
+          latitud?: number | null
+          longitud?: number | null
+          pacer_nombre?: string | null
+          titulo_entrenamiento?: string | null
+          ubicacion?: string | null
+          ubicacion_texto?: string | null
+        }
+        Relationships: []
+      }
       feed_activities: {
         Row: {
           activity_type: string | null
@@ -3708,6 +4214,87 @@ export type Database = {
           points_to_next_tier: number | null
           total_points: number | null
           user_id: string | null
+        }
+        Relationships: []
+      }
+      v_instagram_dia_kpis: {
+        Row: {
+          alcance: number | null
+          alcance_media_7d: number | null
+          fecha: string | null
+          interacciones: number | null
+          medido_el: string | null
+          seguidores_nuevos: number | null
+          seguidores_totales: number | null
+          tasa_envios: number | null
+          tasa_guardado: number | null
+          tasa_interaccion: number | null
+          tasa_me_gusta: number | null
+          visualizaciones: number | null
+        }
+        Relationships: []
+      }
+      v_instagram_ingesta_salud: {
+        Row: {
+          dias_de_atraso: number | null
+          errores_48h: number | null
+          ultima_corrida_ok: string | null
+          ultimo_dia_con_datos: string | null
+        }
+        Relationships: []
+      }
+      v_instagram_pieza_kpis: {
+        Row: {
+          alcance: number | null
+          caption: string | null
+          comentarios: number | null
+          compartidos: number | null
+          conversion_visita_seguidor: number | null
+          formato: string | null
+          guardados: number | null
+          indice_revisualizacion: number | null
+          interacciones: number | null
+          me_gusta: number | null
+          media_id: string | null
+          medido_el: string | null
+          permalink: string | null
+          publicada_en: string | null
+          ratio_comentario_like: number | null
+          reel_segundos_promedio: number | null
+          seguidores_ganados: number | null
+          tasa_comentarios: number | null
+          tasa_envios: number | null
+          tasa_guardado: number | null
+          tasa_interaccion: number | null
+          tasa_me_gusta: number | null
+          tipo: string | null
+          visitas_perfil: number | null
+          visualizaciones: number | null
+        }
+        Relationships: []
+      }
+      v_instagram_pieza_ultima: {
+        Row: {
+          actividad_perfil: number | null
+          alcance: number | null
+          caption: string | null
+          capturado_en: string | null
+          comentarios: number | null
+          compartidos: number | null
+          corrida_dia: string | null
+          formato: string | null
+          guardados: number | null
+          interacciones: number | null
+          me_gusta: number | null
+          media_id: string | null
+          permalink: string | null
+          publicada_en: string | null
+          reel_tiempo_medio_ms: number | null
+          reel_tiempo_total_ms: number | null
+          seguidores_ganados: number | null
+          tipo: string | null
+          visitas_perfil: number | null
+          visualizaciones: number | null
         }
         Relationships: []
       }
@@ -4073,13 +4660,65 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      fn_dashboard_kpis: {
+        Args: never
+        Returns: {
+          active_runners: number
+          adherencia_promedio: number
+          alerts_amarilla: number
+          alerts_naranja: number
+          alerts_roja: number
+          total_checkins: number
+        }[]
+      }
+      fn_dashboard_risk_scores: {
+        Args: never
+        Returns: {
+          avg_compliance: number
+          avg_motivation: number
+          days_since_checkin: number
+          email: string
+          level: string
+          nombre_apellido: string
+          pending_alerts: Json
+          runner_id: string
+          score: number
+        }[]
+      }
+      fn_forget_my_account: { Args: never; Returns: Json }
       fn_forget_runner: {
         Args: { p_reason?: string; p_runner_id: string }
         Returns: Json
       }
       fn_get_community_score: { Args: { p_runner_id: string }; Returns: number }
+      fn_get_vip_event_public: {
+        Args: { p_training_id: string }
+        Returns: {
+          cupos_totales: number
+          estado: string
+          fecha_hora: string
+          id: string
+          latitud: number
+          longitud: number
+          preguntas_extra: Json
+          titulo_entrenamiento: string
+          ubicacion: string
+          ubicacion_texto: string
+        }[]
+      }
+      fn_get_vip_invite_prefill: {
+        Args: { p_email: string; p_training_id: string }
+        Returns: {
+          nombre: string
+          telefono: string
+        }[]
+      }
       fn_is_admin_or_super: { Args: never; Returns: boolean }
       fn_is_coach: { Args: never; Returns: boolean }
+      fn_purge_runner_cascade: {
+        Args: { p_reason: string; p_requested_by: string; p_runner_id: string }
+        Returns: Json
+      }
       fn_runner_id_for_user: { Args: never; Returns: string }
       fn_runner_owns_plan: { Args: { p_plan_id: string }; Returns: boolean }
       fn_runner_owns_week: { Args: { p_week_id: string }; Returns: boolean }
@@ -4238,11 +4877,13 @@ export type Database = {
           coach_id: string | null
           cover_image_url: string | null
           created_at: string
+          deleted_at: string | null
           descripcion: string | null
           description: string | null
           distance_km: number | null
           id: string
           imagen_url: string | null
+          is_private: boolean
           latitude: number | null
           location_detail: string | null
           location_maps_url: string | null
@@ -4336,6 +4977,30 @@ export type Database = {
           full_name: string
           label: string
           user_id: string
+        }[]
+      }
+      get_private_trainings_for_runner: {
+        Args: never
+        Returns: {
+          coach_id: string
+          cover_image_url: string
+          description: string
+          distance_km: number
+          id: string
+          invitation_status: string
+          invited_at: string
+          latitude: number
+          location_detail: string
+          location_maps_url: string
+          location_name: string
+          longitude: number
+          max_capacity: number
+          pacer_user_id: string
+          recommended_level: string
+          scheduled_at: string
+          status: string
+          title: string
+          training_type: string
         }[]
       }
       get_recent_checkins: {
@@ -4470,6 +5135,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      invite_to_training: {
+        Args: { p_runner_id: string; p_training_id: string }
+        Returns: undefined
+      }
       is_blocked_between: {
         Args: { p_me?: string; p_other: string }
         Returns: boolean
@@ -4512,6 +5181,10 @@ export type Database = {
         Returns: string
       }
       resolve_sos_alert: { Args: { p_alert_id: string }; Returns: undefined }
+      respond_training_invitation: {
+        Args: { p_invitation_id: string; p_response: string }
+        Returns: undefined
+      }
       send_message:
         | { Args: { p_body: string; p_channel_id: string }; Returns: string }
         | {
@@ -4796,6 +5469,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       activity_feeling: ["genial", "bien", "normal", "cansada", "dificil"],
