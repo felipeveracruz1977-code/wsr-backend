@@ -1,0 +1,21 @@
+-- 075 — trainings_web: cerrar fuga de entrenamientos no publicados a anon
+--
+-- Hallazgo (auditoría 2026-07-12, advisor security_definer_view + revisión manual):
+-- la vista public.trainings_web era SECURITY DEFINER y hacía `FROM trainings` SIN
+-- filtro de status. anon tiene SELECT sobre la vista y la página pública
+-- /entrenamientos (TrainingCalendar.tsx) la consulta. Al correr como definer,
+-- la RLS de `trainings` (anon = solo status='published') se saltaba, exponiendo a
+-- anon TODOS los entrenamientos —incluidos borradores y sus coordenadas GPS
+-- (latitud/longitud)— antes de publicarse.
+--
+-- Fix: security_invoker = true. Ahora la RLS de `trainings` se aplica según quién
+-- consulta:
+--   - anon  → solo 'published' (política "Entrenamientos visibles al público")
+--   - admin → todos (política "Admin ve todos los entrenamientos")
+--   - coach → todos (política "trainings_staff_manage")
+-- anon y authenticated ya tienen SELECT sobre la tabla base (requisito de invoker).
+-- Además elimina el ERROR del linter security_definer_view para esta vista.
+--
+-- Reversible: ALTER VIEW public.trainings_web SET (security_invoker = false);
+
+ALTER VIEW public.trainings_web SET (security_invoker = true);
