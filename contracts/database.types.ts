@@ -1343,6 +1343,7 @@ export type Database = {
         Row: {
           actualizado_en: string
           asistentes: number | null
+          asistentes_fuente: string | null
           comentarios: string
           costo_produccion_clp: number | null
           creado_en: string
@@ -1363,6 +1364,7 @@ export type Database = {
         Insert: {
           actualizado_en?: string
           asistentes?: number | null
+          asistentes_fuente?: string | null
           comentarios?: string
           costo_produccion_clp?: number | null
           creado_en?: string
@@ -1383,6 +1385,7 @@ export type Database = {
         Update: {
           actualizado_en?: string
           asistentes?: number | null
+          asistentes_fuente?: string | null
           comentarios?: string
           costo_produccion_clp?: number | null
           creado_en?: string
