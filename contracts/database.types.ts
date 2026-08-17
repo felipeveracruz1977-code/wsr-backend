@@ -1339,6 +1339,69 @@ export type Database = {
           },
         ]
       }
+      informes_marca_generados: {
+        Row: {
+          actualizado_en: string
+          asistentes: number | null
+          comentarios: string
+          costo_produccion_clp: number | null
+          creado_en: string
+          creado_por: string
+          desde: string
+          hasta: string
+          historias: Json
+          id: string
+          inversion_clp: number
+          lugar: string
+          marca_ids: string[]
+          narrativa: Json | null
+          nombre: string
+          piezas_manuales: Json
+          solo_marca: boolean
+          tipo_informe: string
+        }
+        Insert: {
+          actualizado_en?: string
+          asistentes?: number | null
+          comentarios?: string
+          costo_produccion_clp?: number | null
+          creado_en?: string
+          creado_por?: string
+          desde: string
+          hasta: string
+          historias?: Json
+          id?: string
+          inversion_clp?: number
+          lugar?: string
+          marca_ids?: string[]
+          narrativa?: Json | null
+          nombre?: string
+          piezas_manuales?: Json
+          solo_marca?: boolean
+          tipo_informe?: string
+        }
+        Update: {
+          actualizado_en?: string
+          asistentes?: number | null
+          comentarios?: string
+          costo_produccion_clp?: number | null
+          creado_en?: string
+          creado_por?: string
+          desde?: string
+          hasta?: string
+          historias?: Json
+          id?: string
+          inversion_clp?: number
+          lugar?: string
+          marca_ids?: string[]
+          narrativa?: Json | null
+          nombre?: string
+          piezas_manuales?: Json
+          solo_marca?: boolean
+          tipo_informe?: string
+        }
+        Relationships: []
+      }
       instagram_dia_snapshots: {
         Row: {
           alcance: number | null
@@ -5285,6 +5348,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      wsr_coach_email_for_runner: {
+        Args: { p_runner_id: string }
+        Returns: string
       }
     }
     Enums: {
